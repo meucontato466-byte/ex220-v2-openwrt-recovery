@@ -1,0 +1,16 @@
+# Arquivos sensíveis e artefatos grandes
+*.bin
+*.img
+*.rom
+*.dump
+*.log
+backup/
+firmware/
+
+# Ambiente local
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+Thumbs.db
