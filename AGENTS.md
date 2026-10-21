@@ -8,7 +8,7 @@ Purpose: authorized, read-only reverse engineering of user-owned firmware.
 - Work locally in a dedicated isolated Linux x64 VM/container with no inbound ports and network disabled during analysis whenever practical. Do not execute extracted programs. No root, flash access or privileged containers.
 - All input firmware and reports stay outside this Git checkout under a user-private directory (0700) and must never be uploaded to GitHub, Codex Cloud or third-party services without explicit, scoped user approval. Codex model/tool output can cross a service boundary; show only minimized/redacted facts and explicitly confirm before sharing private firmware-derived material.
 - No API keys in files, prompts, repositories or command line arguments. No need to use OpenAI API to run REA's local static engines. If an external service is necessary, use scoped short-lived credentials in an external secret manager, set hard spending limits, and ask approval.
-- Before EVERY git commit or PR: run `python3 rea-lab/security/preflight.py --staged` and inspect `git diff --cached`; hooks and scanners are defense in depth, NOT absolute guarantees. No bypass or `git add -f`.
+- Before EVERY git commit or PR: run `gitleaks git --staged --redact --no-banner` and inspect `git diff --cached`; hooks and scanners are defense in depth, NOT absolute guarantees. No bypass or `git add -f`.
 - Never run `curl | bash`, auto-update dependencies, use `npx ...@latest` for a persistent workflow, enable external connections, create GH Actions with secret access, or publish analysis data unless separately approved.
 - No firmware modification, signing, bootloader change, exploitation against production devices or flashing without explicit approval and documented recovery.
 
