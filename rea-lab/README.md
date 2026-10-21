@@ -1,32 +1,44 @@
-# REA Firmware Lab — Codex integration
+# REA Firmware Lab for Codex
 
-The REA project (https://github.com/morluto/rea) exposes firmware tools to Codex through MCP. **No AI retraining is necessary**. This is a static analysis laboratory, not a firmware flasher.
+Read `rea-lab/SECURITY.md` before using this repo. This GitHub repository is currently **PUBLIC**. Never upload confidential inputs or analysis output. Security policy: local-only by default; no external API key required for Binwalk/Unblob/REA local CLI.
 
-## Setup (Linux x64 VM or WSL2)
+## Host prerequisites
 
-Requirements: compatible Node.js (22.19+, 24.11+, 26+), Binwalk 3.1.x, Unblob 26.6.x, procps `ps`, util-linux `prlimit`, plus format-specific Unblob extractors. Refer to the official installation guides for building Binwalk and Unblob; some distro packages are outdated.
+- Dedicated, non-production Linux x64 VM (Proxmox recommended), non-admin user and disk encryption where appropriate.
+- Node.js supported by REA, Binwalk 3.1.x, Unblob 26.6.x, `ps` and `prlimit`.
+- Pre-install vetted dependencies with network access temporarily allowed; disconnect the VM from the internet before examining private firmware. The firewall/network isolation is not automated by these scripts.
+- Select the REA version explicitly; this lab uses 6.7.0. Updates require security review.
 
-Run:
+## Read-only MCP setup for Codex
+
+From a checkout of the feature branch, run:
 ```bash
-bash rea-lab/bootstrap.sh            # preview
-bash rea-lab/bootstrap.sh --apply    # approvals and MCP registration for Codex
-npx rea-agents@latest doctor --client codex --json
+bash rea-lab/bootstrap.sh
+# Review the setup plan, then:
+bash rea-lab/bootstrap.sh --apply
+npx --yes rea-agents@6.7.0 doctor --client codex --json
 ```
 
-Restart Codex after setup. Codex Cloud environments are separate from local machines: they need their own environment setup and installed native tools. The `AGENTS.md` file guides Codex but **does not install the MCP**.
+Restart Codex. REA setup registers a LOCAL stdio MCP server for Codex; never expose it as a publicly reachable MCP service. Setting up an MCP server does not make your GitHub repo private, grant authorization to share sensitive firmware with cloud models, or create a cost cap.
 
-Use read-only analysis:
+## Analyze firmware safely
+
+1. Create a private directory OUTSIDE the Git checkout, such as `$HOME/rea-private`, permission 0700.
+2. Put the firmware there via a local transfer. Do not copy raw dumps to GitHub or Codex Cloud.
+3. First use the REA CLI locally, or use Codex MCP only for content approved to share with the service. Firmware bytes and tool results could be visible to a hosted model depending on the environment.
+4. Inspect the SHA-256, partition signatures and extraction metadata; do not execute any extracted program. Record full reports privately.
+5. Only publish short REDACTED summaries after manual review.
+
+The original `rea-lab/analyze-firmware.sh` helper from the initial draft requires security review before use because it puts output in a Git checkout (even though the folder is ignored) and invokes `@latest`. Until it is replaced, prefer the documented REA CLI and the security policy.
+
+## Before commit
 ```bash
-bash rea-lab/analyze-firmware.sh /absolute/path/to/firmware.bin device-revision
+python3 rea-lab/security/preflight.py --staged
+git diff --cached
 ```
+The preflight scanner is a heuristic and will not catch everything. GitHub push protection and manual review remain necessary.
 
-The script creates a uniquely named local output under `rea-lab/output/` and emits a manifest plus REA inspection/extraction reports. Never upload raw dumps or extracted calibration/secrets to a public repo.
-
-Example Codex prompt: "Using the REA MCP tools, inspect /absolute/path/firmware.bin, extract to a new output directory, inventory components and produce the evidence-based report described in rea-lab/report-template.md. Do not execute extracted files or write to hardware."
-
-A new device firmware requires independent confirmation of SoC, drivers, DTB, boot chain, flash layout, radio calibration, signatures and physical recovery before any flashing.
-
-Sources:
+### Reference material
 - https://github.com/morluto/rea/blob/main/docs/installation.md
 - https://github.com/morluto/rea/blob/main/docs/firmware-analysis.md
 - https://github.com/ReFirmLabs/binwalk
