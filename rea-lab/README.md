@@ -33,7 +33,7 @@ The original `rea-lab/analyze-firmware.sh` helper from the initial draft require
 
 ## Before commit
 ```bash
-python3 rea-lab/security/preflight.py --staged
+gitleaks git --staged --redact --no-banner
 git diff --cached
 ```
 The preflight scanner is a heuristic and will not catch everything. GitHub push protection and manual review remain necessary.
@@ -43,3 +43,5 @@ The preflight scanner is a heuristic and will not catch everything. GitHub push 
 - https://github.com/morluto/rea/blob/main/docs/firmware-analysis.md
 - https://github.com/ReFirmLabs/binwalk
 - https://github.com/onekey-sec/unblob
+
+Note: the initial experimental Python preflight in this draft has not been validated. Use the established Gitleaks tool above instead, with GitHub push protection and manual review. Do not rely on the Python prototype for security decisions.
