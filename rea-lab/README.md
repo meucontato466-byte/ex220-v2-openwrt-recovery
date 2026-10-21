@@ -29,14 +29,25 @@ Restart Codex. REA setup registers a LOCAL stdio MCP server for Codex; never exp
 4. Inspect the SHA-256, partition signatures and extraction metadata; do not execute any extracted program. Record full reports privately.
 5. Only publish short REDACTED summaries after manual review.
 
-The original `rea-lab/analyze-firmware.sh` helper from the initial draft requires security review before use because it puts output in a Git checkout (even though the folder is ignored) and invokes `@latest`. Until it is replaced, prefer the documented REA CLI and the security policy.
+The insecure first-draft `rea-lab/analyze-firmware.sh` helper was removed from this branch: it wrote analysis output in the Git checkout and used `@latest`. Use the pinned REA CLI directly with PRIVATE paths outside Git:
+
+```bash
+umask 077
+mkdir -p "$HOME/rea-private"
+chmod 700 "$HOME/rea-private"
+# Place authorized firmware in this private directory by a local transfer.
+npx --offline --yes rea-agents@6.7.0 inspect-firmware-regions "$HOME/rea-private/firmware.bin" --json > "$HOME/rea-private/regions.json"
+npx --offline --yes rea-agents@6.7.0 extract-firmware "$HOME/rea-private/firmware.bin" "$HOME/rea-private/extracted-001" --json > "$HOME/rea-private/extraction.json"
+```
+
+Offline mode requires the pinned package to have been installed and cached earlier. Inspect tool versions and read the official REA firmware documentation before running. The extraction destination must not already exist, and output must never be committed or sent to external services.
 
 ## Before commit
 ```bash
 gitleaks git --staged --redact --no-banner
 git diff --cached
 ```
-The preflight scanner is a heuristic and will not catch everything. GitHub push protection and manual review remain necessary.
+Install the reviewed Gitleaks v8.30.1 binary and the pre-commit framework locally, then run `pre-commit install` to enable `.pre-commit-config.yaml`. Scanning cannot catch every leak; GitHub push protection and manual review remain necessary.
 
 ### Reference material
 - https://github.com/morluto/rea/blob/main/docs/installation.md
@@ -44,4 +55,4 @@ The preflight scanner is a heuristic and will not catch everything. GitHub push 
 - https://github.com/ReFirmLabs/binwalk
 - https://github.com/onekey-sec/unblob
 
-Note: the initial experimental Python preflight in this draft has not been validated. Use the established Gitleaks tool above instead, with GitHub push protection and manual review. Do not rely on the Python prototype for security decisions.
+The experimental Python scanner was removed after failing validation. Use Gitleaks instead.
