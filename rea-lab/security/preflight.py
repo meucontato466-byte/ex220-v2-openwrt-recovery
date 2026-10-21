@@ -29,11 +29,11 @@ PATTERNS = {
     "AWS key ID": re.compile(rb"AKIA[0-9A-Z]{16}"),
     "Slack token": re.compile(rb"xox[baprs]-[A-Za-z0-9-]{15,}"),
     "Private key header": re.compile(rb"-----BEGIN (?:[A-Z ]+ )?PRIVATE KEY-----"),
-    "JWT value": re.compile(rb"eyJ[A-Za-z0-9_-]{16,}\\.eyJ[A-Za-z0-9_-]{16,}\\.[A-Za-z0-9_-]{12,}"),
+    "JWT value": re.compile(rb"eyJ[A-Za-z0-9_-]{16,}\.eyJ[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{12,}"),
     "hardcoded credential": re.compile(
-        rb"(?im)^\\s*(?:export\\s+)?(?:OPENAI_API_KEY|GITHUB_TOKEN|AWS_SECRET_ACCESS_KEY|"
-        rb"API_SECRET|PASSWORD|PASSWD)\\s*[:=]\\s*['\\\"]?"
-        rb"(?!\\$|\\{|<|example|placeholder|changeme|dummy)[A-Za-z0-9/_+=.-]{12,}"
+        rb"(?im)^\s*(?:export\s+)?(?:OPENAI_API_KEY|GITHUB_TOKEN|AWS_SECRET_ACCESS_KEY|"
+        rb"API_SECRET|PASSWORD|PASSWD)\s*[:=]\s*['\\"]?"
+        rb"(?!\$|\{|<|example|placeholder|changeme|dummy)[A-Za-z0-9/_+=.-]{12,}"
     ),
 }
 
@@ -43,7 +43,7 @@ def git(*args: str) -> bytes:
 def scan() -> int:
     try:
         names = [n.decode("utf-8", errors="surrogateescape")
-                 for n in git("diff", "--cached", "--name-only", "-z", "--diff-filter=ACMR").split(b"\\x00") if n]
+                 for n in git("diff", "--cached", "--name-only", "-z", "--diff-filter=ACMR").split(b"\x00") if n]
     except (subprocess.CalledProcessError, OSError) as exc:
         print("ERROR: cannot inspect staged files:", type(exc).__name__, file=sys.stderr)
         return 2
@@ -65,7 +65,7 @@ def scan() -> int:
         if len(data) > MAX_BYTES:
             errors.append(f"{name}: staged file exceeds audit limit")
             continue
-        if b"\\x00" in data:
+        if b"\x00" in data:
             errors.append(f"{name}: binary data")
             continue
         try:
