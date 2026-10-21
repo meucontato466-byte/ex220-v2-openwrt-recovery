@@ -1,16 +1,49 @@
-# Arquivos sensíveis e artefatos grandes
-*.bin
-*.img
-*.rom
-*.dump
-*.log
+# REA Firmware Lab - never commit device images, extracted data or analysis evidence
+**/.env
+**/.env.*
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx
+**/*.jks
+**/id_rsa*
+**/id_ed25519*
+**/credentials*
+**/secrets*
+**/*service-account*.json
+**/*.bin
+**/*.img
+**/*.rom
+**/*.dump
+**/*.raw
+**/*.nand
+**/*.spi
+**/*.mtd
+**/*.squashfs
+**/*.ubifs
+**/*.pcap
+**/*.pcapng
+**/*.har
+**/*.core
+**/*.sqlite
+**/*.sqlite3
+**/*.db
+**/*.log
 backup/
 firmware/
-
-# Ambiente local
+dumps/
+private/
+analysis-private/
+reports-private/
+artifacts/
+output/
+rea-lab/output/
+# VM and local environments
 .venv/
 venv/
 __pycache__/
 *.py[cod]
 .DS_Store
 Thumbs.db
+
+# Ignore rules are NOT a data loss prevention guarantee. Run preflight before commits.

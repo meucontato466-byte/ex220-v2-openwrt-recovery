@@ -1,0 +1,14 @@
+# Firmware analysis report
+- Hardware model, revision and provenance:
+- Original path, SHA-256 and size:
+- Analysis tools and versions:
+- Extracted regions, offsets, evidence and confidence:
+- CPU architecture, kernel, rootfs, bootloader, partitions:
+- Services, UI, init scripts, drivers:
+- Relevant ELF functions and evidence:
+- Missing/unknown components and extraction gaps:
+- Potential features and hardware resource requirements:
+- Risk assessment (flash layout, boot chain, drivers, radio calibration):
+- Proposed read-only next tests:
+- Recovery plan required before firmware writing:
+- References and evidence paths:
