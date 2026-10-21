@@ -1,0 +1,6 @@
+output/
+*.bin
+*.img
+*.rom
+*.dump
+*.log
