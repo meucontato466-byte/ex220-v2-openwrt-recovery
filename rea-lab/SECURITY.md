@@ -23,7 +23,7 @@
 
 ## Git safeguards
 - Root .gitignore blocks many common sensitive filenames and generated outputs, but does NOT protect files already tracked, unexpected extensions or deliberately forced adds.
-- Run `python3 rea-lab/security/preflight.py --staged` before publishing, inspect `git diff --cached` locally, and enable GitHub push protection, secret scanning and Dependabot.
+- Run `gitleaks git --staged --redact --no-banner` before publishing, inspect `git diff --cached` locally, and enable GitHub push protection, secret scanning and Dependabot.
 - If a real key appears in a commit, revoke it immediately, inspect billing/logs, rotate all affected credentials, and then address Git history. Deleting a file or switching visibility does NOT undo an earlier exposure.
 - Do not post private vulnerabilities publicly. Coordinate vendor disclosure and keep PoCs offline.
 
